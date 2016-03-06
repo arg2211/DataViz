@@ -20,7 +20,7 @@ This R Shiny app uses 30 minutes of tweets that I collected about ten presidenti
 #### Force Layout - All Candidates
 Created a social network visualization using a  D3 force layout. Data are tweets collected over ~5 hours about four presidential candidates: Hillary Clinton, Ted Cruz, Bernie Sanders, and Donald Trump. Nodes represent Twitter users and directed edges represent mentions.
 
-#### Force Layout - Specific Candidate
+#### Force Layout Curvy - Specific Candidate
 Same as above except tweets were collected for ~30 minutes about datasets are split into separate groups for each candidate.
 
 #### Gephi
