@@ -33,66 +33,17 @@ shinyServer(function(input, output) {
     times <- as.POSIXct(sub_tweets$created_at, format="%a %b %d %H:%M:%S %z %Y")
     sub_times <- subset(times, times > min(times) + input$RangeA[1]*60)
     sub_times <- subset(sub_times, sub_times < min(times) + input$RangeA[2]*60)
-    #x1 <- c(as.POSIXct(input$range, origin = "?")) #where x axis values should be placed
-    #x2 <- c(?) #what x axis values should be labeled
-    #axis(side = 1, at = x1, labels = x2, tick = TRUE, col = "black", tck = -.05) #x axis
-    #axis(side = 2, at = NULL, labels = NULL, tick = TRUE, col = "black") #y axis
     
     hist(sub_times,
          breaks = 'mins',
          freq=TRUE,
          main = paste(input$var),
-         #xlim = c(0,1000),
-         #xlim = c(min(input$range),max(input$range)),
-         #ylim = c(0,10000),
          xlab = "Minutes",
          ylab = "Number of Tweets",
          col = "#FFD92F",
          border = "white"
-         #axes = FALSE
          )
     
-# !!! THE FOLLOWING 2 LINES WORK TO PRODUCE A STATIC X AXIS FROM THE FIRST 
-# !!! TIME A TWEET WAS RECORDED TO LAST TIME TWEET WAS RECORDED
-    #r <- as.POSIXct(range(times), "mins")
-    #axis.POSIXct(1, at = seq(r[1], r[2], by = "min"), format = "%H:%M")
-    
-# !!! I ALSO COULDN'T GET THE Y AXIS TO DISPLAY PROPER NUMBERS
-    #axis(2)
-    
-    
-# !!! THE CODE BELOW DOES NOT WORK BUT I TRIED!
-# !!! (TRYING TO CHANGE THE X AXIS SO IT UPDATES WITH THE SLIDER)      
-    
-    #r <- as.POSIXct(range(times), "mins")
-    #axis.POSIXct(1, at = seq(r[1], r[2], by = "min"), format = "%H:%M")
-    
-    #r_mod <- as.POSIXct(input$RangeA, origin="2016-02-07", "UTC", format = "%M", "mins")
-    #r_mod <- as.POSIXct(c(input$RangeA),  format="%M")# "mins") #as.POSIXct(input$RangeA, "mins")
-    #r_mod <- as.POSIXct(input$RangeA, format="%a-%b-%d %H:%M:%S", origin="2016-02-07", "UTC")
-    #axis.POSIXct(1, at = seq(r_mod[1], r_mod[2], by = "min"), format = "%H:%M")
-    
-    #r_mod_1 <- format(as.POSIXct(as.numeric(min(input$RangeA))*60, origin="2016-02-07", "UTC"), "%H:%M")
-    #r_mod_2 <- format(as.POSIXct(as.numeric(max(input$RangeA))*60, origin="2016-02-07", "UTC"), "%H:%M")
-    #axis.POSIXct(1, at = seq(r_mod_1[1], r_mod_2[1], by = "min"), format = "%H:%M")
-    
-    #r_mod_1 <- format(as.POSIXct((input$RangeA), origin="2016-02-07", "UTC"), "%H:%M")
-    
-    #min1 <-as.numeric(min(input$range))
-    #max1 <-as.numeric(max(input$range))
-    
-    #r1<-as.POSIXct(min(input$range))
-    #r2<-as.POSIXct(max(input$range))
-    #axis.POSIXct(1, at = seq(r1, r2, by = "min"), format = "%H:%M")
-    
-    #r3 <- min(r)
-    #r4<- max(r)
-    
-    #axis.POSIXct(side=1, at=seq(min(input$range), max(input$range), 60), labels=NULL)
-
-    #OR use par()??
-    #par(xaxp = c(min(input$range), max$input$range))
-    #axis(1)
   })
   
 output$wordcloud<- renderPlot({
