@@ -1,2 +1,4 @@
 library(shiny)
-runApp("Assignment_1_Shiny_App_Final")
+getwd()
+setwd("C:/Users/Amanda/Documents/GitHub/DataViz/Assignment1")
+runApp("ShinyApp")
