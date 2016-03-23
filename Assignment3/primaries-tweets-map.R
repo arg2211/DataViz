@@ -191,31 +191,73 @@ qtm(usa, "statecountDT")
 library(tm)
 
 # create choropleth maps for each candidate, mapping # of tweets in each state
-qtm(worldmap, fill = "countrycountHC", fill.title = "Tweet Count", 
-    fill.style="fixed", fill.breaks=c(0,1,5,80,200))
+# hillary clinton
 worldmap$countrycountHC
+staticmapworldHC <- qtm(worldmap, fill = "countrycountHC", # use worldmap that we created and fill with candidate's tweet counts by country
+                        fill.title = "Hillary's Tweet Count", # legend title
+                        borders.alpha = 0.5, # changes thickness of borders around countries
+                        fill.style = "fixed", # allows us to customize legend breaks
+                        fill.breaks = c(0, 1, 5, 80, 200), # specify legend breaks
+                        fill.auto.palette.mapping = FALSE, # allows up to change colors of map
+                        fill.palette = brewer.pal(4, "PuBuGn"), # use RColorBrewer scheme to color countries by tweet count
+                        style = "white", # use white style
+                        layout.asp = NA)
+staticmapworldHC
 
-qtm(worldmap, fill = "countrycountTC", fill.title = "Tweet Count",
-    fill.style = "fixed", fill.breaks = c(0, 1, 2, 3, 5, 100, 110))
+# ted cruz
 worldmap$countrycountTC
+staticmapworldTC <- qtm(worldmap, fill = "countrycountTC", # use worldmap that we created and fill with candidate's tweet counts by country
+                        fill.title = "Ted's Tweet Count", # legend title
+                        borders.alpha = 0.5, # changes thickness of borders around countries
+                        fill.style = "fixed", # allows us to customize legend breaks
+                        fill.breaks = c(0, 1, 2, 3, 5, 100, 110), # specify legend breaks
+                        fill.auto.palette.mapping = FALSE, # allows up to change colors of map
+                        fill.palette = brewer.pal(6, "Greens"), # use RColorBrewer scheme to color countries by tweet count
+                        style = "white", # use white style
+                        layout.asp = NA)
+staticmapworldTC
 
-qtm(worldmap, fill = "countrycountMR", fill.title = "Tweet Count",
-    fill.style = "fixed", fill.breaks = c(0, 1, 4, 100, 200))
+
+# marco rubio
 worldmap$countrycountMR
+staticmapworldMR <- qtm(worldmap, fill = "countrycountMR", # use worldmap that we created and fill with candidate's tweet counts by country
+                        fill.title = "Marco's Tweet Count", # legend title
+                        borders.alpha = 0.5, # changes thickness of borders around countries
+                        fill.style = "fixed", # allows us to customize legend breaks
+                        fill.breaks = c(0, 1, 4, 100, 200), # specify legend breaks
+                        fill.auto.palette.mapping = FALSE, # allows up to change colors of map
+                        fill.palette = brewer.pal(4, "Oranges"), # use RColorBrewer scheme to color countries by tweet count
+                        style = "white", # use white style
+                        layout.asp = NA)
+staticmapworldMR
 
-qtm(worldmap, fill = "countrycountBS", fill.title = "Tweet Count",
-    fill.style = "fixed", fill.breaks = c(0, 1, 4, 100, 200))
+# bernie sanders
 worldmap$countrycountBS
+staticmapworldBS <- qtm(worldmap, fill = "countrycountBS", # use worldmap that we created and fill with candidate's tweet counts by country
+                        fill.title = "Bernie's Tweet Count", # legend title
+                        borders.alpha = 0.5, # changes thickness of borders around countries
+                        fill.style = "fixed", # allows us to customize legend breaks
+                        fill.breaks = c(0, 1, 2, 5, 10, 200), # specify legend breaks
+                        fill.auto.palette.mapping = FALSE, # allows up to change colors of map
+                        fill.palette = brewer.pal(5, "Blues"), # use RColorBrewer scheme to color countries by tweet count
+                        style = "white", # use white style
+                        layout.asp = NA)
+staticmapworldBS
 
-qtm(worldmap, fill = "countrycountDT", fill.title = "Tweet Count",
-    fill.style = "fixed", fill.breaks = c(0, 1, 3, 10, 100, 205),
-    tmap.style = natural)
+# donald trump
 worldmap$countrycountDT
+staticmapworldDT <- qtm(worldmap, fill = "countrycountDT", # use worldmap that we created and fill with DT's tweet counts by country
+                        fill.title = "Trump's Tweet Count", # legend title
+                        borders.alpha = 0.5, # changes thickness of borders around countries
+                        fill.style = "fixed", # allows us to customize legend breaks
+                        fill.breaks = c(0, 1, 3, 10, 100, 205), # specify legend breaks
+                        fill.auto.palette.mapping = FALSE, # allows up to change colors of map
+                        fill.palette = brewer.pal(5, "Purples"), # use RColorBrewer scheme to color countries by tweet count
+                        style = "white", # use white style
+                        layout.asp = NA)
+staticmapworldDT
 
-style_catalogue()
 
-
-summary(usa)
 
 # create choropleth maps for each candidate, mapping proportion (%) of total tweets in each state
 qtm(usa, "statepropHC")
@@ -224,293 +266,80 @@ qtm(usa, "statepropMR")
 qtm(usa, "statepropBS")
 qtm(usa, "statepropDT")
 
-
-
-
-
-
-
------------------------------------------------------------
-# Jenn's code for choropleth maps
-# see: http://stackoverflow.com/questions/8751497/latitude-longitude-coordinates-to-state-code-in-r for latlong2state function
-
-#install.packages("choroplethr")
-#install.packages("choroplethrMaps")
-library(choroplethr)
-
-state_vals <- data.frame(latlong2state(bs_coordinates_B))
-names(state_vals) <- c("region")
-state_cnts <- count(state_vals, region)
-names(state_cnts) <- c("region", "value")
-
-state_choropleth(na.omit(state_cnts))
-
-# Ling's code for choropleth maps
-
-library(choroplethr)
-latlong2state <- function(pointsDF) {
-  states <- map('state', fill=TRUE, col="transparent", plot=FALSE)
-  IDs <- sapply(strsplit(states$names, ":"), function(x) x[1])
-  states_sp <- map2SpatialPolygons(states, IDs=IDs,
-                                   proj4string=CRS("+proj=longlat +datum=WGS84"))
-  pointsSP <- SpatialPoints(pointsDF, 
-                            proj4string=CRS("+proj=longlat +datum=WGS84"))
-  indices <- over(pointsSP, states_sp)
-  stateNames <- sapply(states_sp@polygons, function(x) x@ID)
-  stateNames[indices]
-}
-
-state_valsDT <- data.frame(latlong2state(sp.dt))
-names(state_valsDT) <- c("region")
-state_countsDT <- count(state_valsDT, region)
-names(state_countsDT) <- c("region", "value")
-
-Sander_usamap <- state_choropleth(na.omit(state_cnts))
-
-sp.dt.df <- data.frame(sp.dt)
-BS.usa.map <- state_choropleth(sp.dt.df)
------------------------------------------
-
-
-
-
-
-# ------------------------------- # Erica's code # ------------------------------------ #
-
-setwd("/Users/erica_kilbride/Downloads")
-load("tweet_all.rda", envir = parent.frame(), verbose = FALSE)
-
-candidates <- c("Bernie", "Hillary", "Marco", "Ted", "Donald")
-regexes <- list(c("(Bernie|Sanders|BernieSanders|Feelthebern)","Bernie"),
-                c("(Hillary|Clinton|Hillaryclinton|HRC|Hills)","Hillary"),
-                c("(Marco|Rubio|Marcorubio)","Marco"),
-                c("(Ted|Cruz|Tedcruz)","Ted"),
-                c("(Donald|Trump|Donaldtrump)","Donald"))
-#Create a vector, the same length as the df
-output_vector <- character(nrow(tweet_all))
-
-#For each regex..
-for(i in seq_along(regexes)){
-  
-  #Grep through d$name, and when you find matches, insert the relevant 'tag' into
-  #The output vector
-  output_vector[grepl(x = tweet_all$text,ignore.case = TRUE, pattern = regexes[[i]][1])] <- regexes[[i]][2]
-  
-} 
-#Insert that now-filled output vector into the dataframe
-tweet_all$candidate <- output_vector
-tweet_all <- subset(tweet_all, tweet_all$candidate != "")
-
-Bernie <- subset(tweet_all, tweet_all$candidate == "Bernie")
-Hillary <- subset(tweet_all, tweet_all$candidate == "Hillary")
-Ted <- subset(tweet_all, tweet_all$candidate == "Ted")
-Marco <- subset(tweet_all, tweet_all$candidate == "Marco")
-Donald <- subset(tweet_all, tweet_all$candidate == "Donald")
-
-require(maps)
-world_map <-map("world", fill = FALSE)
-geo_tweets = tweet_all
-tw_coordinates_B<- cbind(geo_tweets$lon,geo_tweets$lat)
-tw_coordinates_B2 <- na.omit(tw_coordinates_B)
-geo <- data.frame(tw_coordinates_B2)
-
-#seperate by candidate
-Bernie <- subset(tweet_all, tweet_all$candidate == "Bernie")
-tw_coordinates_B<- cbind(Bernie$lon,Bernie$lat)
-tw_coordinates_B2 <- na.omit(tw_coordinates_B)
-B_geo <- data.frame(tw_coordinates_B2)
-
-Hillary <- subset(tweet_all, tweet_all$candidate == "Hillary")
-tw_coordinates_B<- cbind(Hillary$lon,Hillary$lat)
-tw_coordinates_B2 <- na.omit(tw_coordinates_B)
-H_geo <- data.frame(tw_coordinates_B2)
-
-Ted <- subset(tweet_all, tweet_all$candidate == "Ted")
-tw_coordinates_B<- cbind(Ted$lon,Ted$lat)
-tw_coordinates_B2 <- na.omit(tw_coordinates_B)
-T_geo <- data.frame(tw_coordinates_B2)
-
-Marco <- subset(tweet_all, tweet_all$candidate == "Marco")
-tw_coordinates_B<- cbind(Marco$lon,Marco$lat)
-tw_coordinates_B2 <- na.omit(tw_coordinates_B)
-M_geo <- data.frame(tw_coordinates_B2)
-
-Donald <- subset(tweet_all, tweet_all$candidate == "Donald")
-tw_coordinates_B<- cbind(Donald$lon,Donald$lat)
-tw_coordinates_B2 <- na.omit(tw_coordinates_B)
-D_geo <- data.frame(tw_coordinates_B2)
-
-
-tw_points_B <- SpatialPoints(tw_coordinates_B2)
-plot(tw_points_B)
-class(tw_points_B)
-
-
-world <- map_data("world")
-ggplot(world) + geom_map(aes(map_id = region), map = world, fill = "grey90", color = "grey50", size = 0.25) + expand_limits(x = world$long, y = world$lat) + scale_x_continuous("Longitude") + scale_y_continuous("Latitude") + theme_minimal() + geom_point(data = geo, aes(x = geo$X1, y = geo$X2), size = 1, alpha = 1/5, color = "blue")
-
-#seperate by candidate
-#Bernie
-ggplot(world) + geom_map(aes(map_id = region), map = world, fill = "grey90", color = "grey50", size = 0.25) + expand_limits(x = world$long, y = world$lat) + scale_x_continuous("Longitude") + scale_y_continuous("Latitude") + theme_minimal() + geom_point(data = B_geo, aes(x = B_geo$X1, y = B_geo$X2), size = 1, alpha = 1/5, color = "dark blue")
-
-#Hillary
-ggplot(world) + geom_map(aes(map_id = region), map = world, fill = "white", color = "grey50", size = 0.25) + expand_limits(x = world$long, y = world$lat) + scale_x_continuous("Longitude") + scale_y_continuous("Latitude") + theme_minimal() + geom_point(data = H_geo, aes(x = H_geo$X1, y = H_geo$X2), size = 1, alpha = 1/5, color = "pink")
-
-#Ted
-ggplot(world) + geom_map(aes(map_id = region), map = world, fill = "white", color = "grey50", size = 0.25) + expand_limits(x = world$long, y = world$lat) + scale_x_continuous("Longitude") + scale_y_continuous("Latitude") + theme_minimal() + geom_point(data = T_geo, aes(x = T_geo$X1, y = T_geo$X2), size = 1, alpha = 1/5, color = "red")
-
-#Marco
-ggplot(world) + geom_map(aes(map_id = region), map = world, fill = "white", color = "grey50", size = 0.25) + expand_limits(x = world$long, y = world$lat) + scale_x_continuous("Longitude") + scale_y_continuous("Latitude") + theme_minimal() + geom_point(data = M_geo, aes(x = M_geo$X1, y = M_geo$X2), size = 1, alpha = 1/5, color = "orange")
-
-#Donald
-ggplot(world) + geom_map(aes(map_id = region), map = world, fill = "white", color = "grey50", size = 0.25) + expand_limits(x = world$long, y = world$lat) + scale_x_continuous("Longitude") + scale_y_continuous("Latitude") + theme_minimal() + geom_point(data = D_geo, aes(x = D_geo$X1, y = D_geo$X2), size = 1, alpha = 1/5, color = "black")
-
-# --------------------------- # end of Erica's code # -----------------------------------------#
-
-# --------------------------- # Jenn's code # -------------------------------------------------#
-tweets_ST.df <- parseTweets("tweets.03.01.2016.summary.json.geo")
-
-tweets_ST.df$text <- iconv(tweets_ST.df$text, from = "UTF-8", to = "latin1", sub = "")
-
-bs <- filter(tweets_ST.df, grepl("bernie|sanders", text, ignore.case=TRUE))
-
-# install.packages("sp")
-# install.packages("maps")
-# install.packages("rgdal")
-# install.packages("rgeos")
-# install.packages("GISTools")
-# install.packages("maptools")
-library(sp)
-library(maps)
-library(rgdal)
-library(rgeos)
-library(GISTools)
-library(maptools)
-
-bs_coordinates_B <- cbind(tweets_ST.df$lon, tweets_ST.df$lat)
-bs_coordinates_b2 <- na.omit(bs_coordinates_B)
-bs_points_B <- SpatialPoints(bs_coordinates_b2)
-plot(bs_points_B)
-class(bs_points_B)
-
-library(maps)
-library(ggplot2)
-all_states <- map_data("state")
-plot(all_states)
-
-world <- map_data("world")
-plot(world)
-
-# crs.geo <- CRS("+init=EPSG:32633")
-# proj4string(bs_points_B) <- crs.geo
-
-require(maps)
-usa <- map("state", fill=FALSE)
-usa$names  # prints all names of states in usa map
-
-worldmap <- map("world", fill=TRUE)
-worldmap$names # prints all country names in world map
-
-require(sp)
-require(maptools)
-IDs <- sapply(strsplit(usa$names, ":"), function(x) x[1])
-usa <- map2SpatialPolygons(usa, IDs=IDs, proj4string=CRS("+proj=longlat +datum=WGS84"))
-
-worldIDs <- sapply(strsplit(worldmap$names, ":"), function(x) x[1])
-worldmap <- map2SpatialPolygons(worldmap, IDs=worldIDs, proj4string=CRS("+proj=longlat +datum=WGS84"))
-
-install.packages("choroplethr")
-install.packages("choroplethrMaps")
-library(choroplethr)
-
-# see: http://stackoverflow.com/questions/8751497/latitude-longitude-coordinates-to-state-code-in-r for latlong2state function
-
-library(sp)
-library(maps)
-library(maptools)
-
-# The single argument to this function, pointsDF, is a data.frame in which:
-#   - column 1 contains the longitude in degrees (negative in the US)
-#   - column 2 contains the latitude in degrees
-
-latlong2state <- function(pointsDF) {
-  # Prepare SpatialPolygons object with one SpatialPolygon
-  # per state (plus DC, minus HI & AK)
-  states <- map('state', fill=TRUE, col="transparent", plot=FALSE)
-  IDs <- sapply(strsplit(states$names, ":"), function(x) x[1])
-  states_sp <- map2SpatialPolygons(states, IDs=IDs,
-                                   proj4string=CRS("+proj=longlat +datum=WGS84"))
-  
-  # Convert pointsDF to a SpatialPoints object 
-  pointsSP <- SpatialPoints(pointsDF, 
-                            proj4string=CRS("+proj=longlat +datum=WGS84"))
-  
-  # Use 'over' to get _indices_ of the Polygons object containing each point 
-  indices <- over(pointsSP, states_sp)
-  
-  # Return the state names of the Polygons object containing each point
-  stateNames <- sapply(states_sp@polygons, function(x) x@ID)
-  stateNames[indices]
-}
-
-state_vals <- data.frame(latlong2state(bs_coordinates_B))
-names(state_vals) <- c("region")
-state_cnts <- count(state_vals, region)
-names(state_cnts) <- c("region", "value")
-
-state_choropleth(na.omit(state_cnts))
-# -------------------------------------# end of Jenn's code # --------------------------------------#
-
-# -------------------------------# Ling's code for maps # ---------------------------#
-## world map for Sanders
-world_map <- map("world", fill=F)
-Sanders_coordinates<- cbind(Sanders$place_lon,Sanders$place_lat)
-Sanders_coordinates<- na.omit(Sanders_coordinates)
-Sanders_geo <- data.frame(Sanders_coordinates)
-
-Sanders_points <- SpatialPoints(Sanders_coordinates)
-plot(Sanders_points)
-class(Sanders_points)
-
-world <- map_data("world")
-ggplot(world) + geom_map(aes(map_id = region), map = world, fill = "grey90", color = "grey50", size = 0.25) + expand_limits(x = world$long, y = world$lat) + scale_x_continuous("Longitude") + scale_y_continuous("Latitude") + theme_minimal() + geom_point(data = Sanders_geo, aes(x = Sanders_geo$X1, y = Sanders_geo$X2), size = 1, alpha = 1/5, color = "blue")
-
-## usa map for Sanders
-require(sp)
-require(maptools)
-
-all_states <- map_data("state")
-plot(all_states)
-usa <- map("state", fill=T)
-
-IDs <- sapply(strsplit(usa$names, ":"), function(x) x[1])
-usa <- map2SpatialPolygons(usa, IDs=IDs, proj4string=CRS("+proj=longlat +datum=WGS84"))
-
-poly.counts(Sanders_points, usa)
-
-##install.packages("choroplethr")
-##install.packages("choroplethrMaps")
-library(choroplethr)
-
-latlong2state <- function(pointsDF) {
-  states <- map('state', fill=TRUE, col="transparent", plot=FALSE)
-  IDs <- sapply(strsplit(states$names, ":"), function(x) x[1])
-  states_sp <- map2SpatialPolygons(states, IDs=IDs,
-                                   proj4string=CRS("+proj=longlat +datum=WGS84"))
-  
-  pointsSP <- SpatialPoints(pointsDF, 
-                            proj4string=CRS("+proj=longlat +datum=WGS84"))
-  
-  indices <- over(pointsSP, states_sp)
-  
-  stateNames <- sapply(states_sp@polygons, function(x) x@ID)
-  stateNames[indices]
-}
-
-state_vals <- data.frame(latlong2state(Sanders_coordinates))
-names(state_vals) <- c("region")
-state_cnts <- count(state_vals, region)
-names(state_cnts) <- c("region", "value")
-
-Sander_usamap <- state_choropleth(na.omit(state_cnts))
-# ------------------------- # end of Ling's code # -----------------------------------#
+# hillary clinton
+usa$statepropHC
+staticmapusaHC <- qtm(usa, fill = "statepropHC", # use use that we created and fill with candidate's tweet counts by state
+                      fill.title = "Percent of Tweets about Hillary", # legend title
+                      borders.alpha = 0.5, # changes thickness of borders around countries
+                      fill.style = "fixed", # allows us to customize legend breaks
+                      fill.breaks = c(0, 1, 2, 4, 10, 20), # specify legend breaks
+                      fill.auto.palette.mapping = FALSE, # allows up to change colors of map
+                      fill.palette = brewer.pal(5, "PuBuGn"), # use RColorBrewer scheme to color states by tweet count
+                      style = "white", # use white style
+                      layout.asp = NA)
+staticmapusaHC
+
+# ted cruz
+usa$statepropTC
+staticmapusaTC <- qtm(usa, fill = "statepropTC", # use use that we created and fill with candidate's tweet counts by state
+                      fill.title = "Percent of Tweets about Ted", # legend title
+                      borders.alpha = 0.5, # changes thickness of borders around countries
+                      fill.style = "fixed", # allows us to customize legend breaks
+                      fill.breaks = c(0, 2, 4, 6, 8, 10), # specify legend breaks
+                      fill.auto.palette.mapping = FALSE, # allows up to change colors of map
+                      fill.palette = brewer.pal(5, "Greens"), # use RColorBrewer scheme to color states by tweet count
+                      style = "white", # use white style
+                      layout.asp = NA)
+staticmapusaTC
+
+# marco rubio
+usa$statepropMR
+staticmapusaMR <- qtm(usa, fill = "statepropMR", # use use that we created and fill with candidate's tweet counts by state
+                      fill.title = "Percent of Tweets about Marco", # legend title
+                      borders.alpha = 0.5, # changes thickness of borders around countries
+                      fill.style = "fixed", # allows us to customize legend breaks
+                      fill.breaks = c(0, 2, 4, 8, 12, 16), # specify legend breaks
+                      fill.auto.palette.mapping = FALSE, # allows up to change colors of map
+                      fill.palette = brewer.pal(5, "Oranges"), # use RColorBrewer scheme to color states by tweet count
+                      style = "white", # use white style
+                      layout.asp = NA)
+staticmapusaMR
+
+# bernie sanders
+usa$statepropBS
+staticmapusaBS <- qtm(usa, fill = "statepropBS", # use use that we created and fill with candidate's tweet counts by state
+                      fill.title = "Percent of Tweets about Bernie", # legend title
+                      borders.alpha = 0.5, # changes thickness of borders around countries
+                      fill.style = "fixed", # allows us to customize legend breaks
+                      fill.breaks = c(0, 2, 4, 8, 10, 14), # specify legend breaks
+                      fill.auto.palette.mapping = FALSE, # allows up to change colors of map
+                      fill.palette = brewer.pal(5, "Blues"), # use RColorBrewer scheme to color states by tweet count
+                      style = "white", # use white style
+                      layout.asp = NA)
+staticmapusaBS
+
+# donald trump
+usa$statepropDT
+staticmapusaDT <- qtm(usa, fill = "statepropDT", # use use that we created and fill with candidate's tweet counts by state
+                      fill.title = "Percent of Tweets about Donald", # legend title
+                      borders.alpha = 0.5, # changes thickness of borders around countries
+                      fill.style = "fixed", # allows us to customize legend breaks
+                      fill.breaks = c(0, 2, 4, 6, 10, 15), # specify legend breaks
+                      fill.auto.palette.mapping = FALSE, # allows up to change colors of map
+                      fill.palette = brewer.pal(5, "Purples"), # use RColorBrewer scheme to color states by tweet count
+                      style = "white", # use white style
+                      layout.asp = NA)
+staticmapusaDT
+
+
+# save maps as .jpg files
+save_tmap(staticmapworldHC, filename="./jpeg-maps/staticmap.world.HC.jpg")
+save_tmap(staticmapworldTC, filename="./jpeg-maps/staticmap.world.TC.jpg")
+save_tmap(staticmapworldMR, filename="./jpeg-maps/staticmap.world.MR.jpg")
+save_tmap(staticmapworldBS, filename="./jpeg-maps/staticmap.world.BS.jpg")
+save_tmap(staticmapworldDT, filename="./jpeg-maps/staticmap.world.DT.jpg")
+save_tmap(staticmapusaHC, filename="./jpeg-maps/staticmap.usa.HC.jpg")
+save_tmap(staticmapusaTC, filename="./jpeg-maps/staticmap.usa.TC.jpg")
+save_tmap(staticmapusaMR, filename="./jpeg-maps/staticmap.usa.MR.jpg")
+save_tmap(staticmapusaBS, filename="./jpeg-maps/staticmap.usa.BS.jpg")
+save_tmap(staticmapusaDT, filename="./jpeg-maps/staticmap.usa.DT.jpg")
