@@ -28,3 +28,19 @@ Contains same four tweet mention networks as above, where each network represent
 
 #### Bonus
 Same as force layout curvy visualizations but edges are straight lines.
+
+
+## *Assignment 3*
+
+Uses tweets collected about presidential candidates on days of primaries through March 15:
+* Feb 9
+* Feb 20
+* Feb 23
+* Feb 27
+* Mar 1
+* Mar 5
+* Mar 6
+* Mar 8
+* Mar 15
+
+I mapped the number of tweets sent from countries around the world about each of five candidates (Hillary Clinton, Ted Cruz, Marco Rubio, Bernie Sanders, and Donald Trump).  I also mapped the proportion of total tweets sent from inside the US by state for each of the five candidates. Additionally, I created the same ten maps just mentioned but used the base location of Twitter users (```{r}"place_lon``` and ```{r}place_lat```) instead of the real-time geolocated place from where each tweet was sent (```{r}"lon``` and ```{r}lat```).  There are tens of thousands of tweets that have this data available while there are only a few hundred tweets with the real-time geolocation available. Final versions of these maps are included in .jpeg format.
