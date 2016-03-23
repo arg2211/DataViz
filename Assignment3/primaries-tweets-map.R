@@ -101,9 +101,7 @@ class(sp.dt)  # check that the value is sp
 # now we have our data points - we need the map (polygons)
 library(ggplot2) # need for map_data function
 all_states <- map_data("state")
-
 plot(all_states)
-
 library(rgeos)
 library(GISTools)
 
@@ -112,27 +110,44 @@ usa <- map("state", fill = TRUE)  # produces map of US by state
 
 require(sp)
 require(maptools)
+
+# ------ # *** what's happening here?? *** # ------ #
+# use USA map that we made to produce a spatial polygon
 IDs <- sapply(strsplit(usa$names, ":"), function(x) x[1])  
-# ^ use USA map that we made to produce a spatial polygon
 usa <- map2SpatialPolygons(usa, IDs=IDs, proj4string=CRS("+proj=longlat +datum=WGS84"))
 
-poly.counts(sp.hc, usa) # count tweets by state for hillary
-poly.counts(sp.tc, usa) # count tweets by state for ted
-poly.counts(sp.mr, usa) # count tweets by state for marco
-poly.counts(sp.bs, usa) # count tweets by state for bernie
-poly.counts(sp.dt, usa) # count tweets by state for donald
+# count tweets by state for each candidate
+poly.counts(sp.hc, usa)
+poly.counts(sp.tc, usa)
+poly.counts(sp.mr, usa)
+poly.counts(sp.bs, usa)
+poly.counts(sp.dt, usa)
 
+# sum of all tweets for each candidate
+sum(poly.counts(sp.hc, usa)) # = 169
+sum(poly.counts(sp.tc, usa)) # = 112
+sum(poly.counts(sp.mr, usa)) # = 57
+sum(poly.counts(sp.bs, usa)) # = 194
+sum(poly.counts(sp.dt, usa)) # = 224
 
-# create a choropleth map of tweet counts by state
+# create a variable that includes the # of tweets in each state
 usa$statecountHC <- poly.counts(sp.hc, usa)
 usa$statecountTC <- poly.counts(sp.tc, usa)
 usa$statecountMR <- poly.counts(sp.mr, usa)
 usa$statecountBS <- poly.counts(sp.bs, usa)
 usa$statecountDT <- poly.counts(sp.dt, usa)
 
+# create a variable that includes the proportion (%) of tweets in each state compared to total # of tweets for candidate
+usa$statepropHC <- poly.counts(sp.hc, usa)/sum(poly.counts(sp.hc, usa))*100
+usa$statepropTC <- poly.counts(sp.tc, usa)/sum(poly.counts(sp.tc, usa))*100
+usa$statepropMR <- poly.counts(sp.mr, usa)/sum(poly.counts(sp.mr, usa))*100
+usa$statepropBS <- poly.counts(sp.bs, usa)/sum(poly.counts(sp.bs, usa))*100
+usa$statepropDT <- poly.counts(sp.dt, usa)/sum(poly.counts(sp.dt, usa))*100
+
 library(tmap)
 library(RColorBrewer)
 
+# create choropleth maps for each candidate, mapping # of tweets in each state
 qtm(usa, "statecountHC")
 qtm(usa, "statecountTC")
 qtm(usa, "statecountMR")
@@ -141,6 +156,26 @@ qtm(usa, "statecountDT")
 
 summary(usa)
 
+# create choropleth maps for each candidate, mapping proportion (%) of total tweets in each state
+qtm(usa, "statepropHC")
+qtm(usa, "statepropTC")
+qtm(usa, "statepropMR")
+qtm(usa, "statepropBS")
+qtm(usa, "statepropDT")
+
+# Jenn's code for choropleth maps
+# see: http://stackoverflow.com/questions/8751497/latitude-longitude-coordinates-to-state-code-in-r for latlong2state function
+
+install.packages("choroplethr")
+install.packages("choroplethrMaps")
+library(choroplethr)
+
+state_vals <- data.frame(latlong2state(bs_coordinates_B))
+names(state_vals) <- c("region")
+state_cnts <- count(state_vals, region)
+names(state_cnts) <- c("region", "value")
+
+state_choropleth(na.omit(state_cnts))
 
 
 # ------------------------------- # Erica's code # ------------------------------------ #
@@ -266,24 +301,60 @@ library(ggplot2)
 all_states <- map_data("state")
 plot(all_states)
 
+world <- map_data("world")
+plot(world)
+
 # crs.geo <- CRS("+init=EPSG:32633")
 # proj4string(bs_points_B) <- crs.geo
 
 require(maps)
 usa <- map("state", fill=FALSE)
+usa$names  # prints all names of states in usa map
+
+worldmap <- map("world", fill=FALSE)
+worldmap$names # prints all country names in world map
 
 require(sp)
 require(maptools)
 IDs <- sapply(strsplit(usa$names, ":"), function(x) x[1])
 usa <- map2SpatialPolygons(usa, IDs=IDs, proj4string=CRS("+proj=longlat +datum=WGS84"))
 
-poly.counts(bs_points_B, usa)
+worldIDs <- sapply(strsplit(worldmap$names, ":"), function(x) x[1])
+worldmap <- map2SpatialPolygons(worldmap, IDs=worldIDs, proj4string=CRS("+proj=longlat +datum=WGS84"))
 
 install.packages("choroplethr")
 install.packages("choroplethrMaps")
 library(choroplethr)
 
 # see: http://stackoverflow.com/questions/8751497/latitude-longitude-coordinates-to-state-code-in-r for latlong2state function
+
+library(sp)
+library(maps)
+library(maptools)
+
+# The single argument to this function, pointsDF, is a data.frame in which:
+#   - column 1 contains the longitude in degrees (negative in the US)
+#   - column 2 contains the latitude in degrees
+
+latlong2state <- function(pointsDF) {
+  # Prepare SpatialPolygons object with one SpatialPolygon
+  # per state (plus DC, minus HI & AK)
+  states <- map('state', fill=TRUE, col="transparent", plot=FALSE)
+  IDs <- sapply(strsplit(states$names, ":"), function(x) x[1])
+  states_sp <- map2SpatialPolygons(states, IDs=IDs,
+                                   proj4string=CRS("+proj=longlat +datum=WGS84"))
+  
+  # Convert pointsDF to a SpatialPoints object 
+  pointsSP <- SpatialPoints(pointsDF, 
+                            proj4string=CRS("+proj=longlat +datum=WGS84"))
+  
+  # Use 'over' to get _indices_ of the Polygons object containing each point 
+  indices <- over(pointsSP, states_sp)
+  
+  # Return the state names of the Polygons object containing each point
+  stateNames <- sapply(states_sp@polygons, function(x) x@ID)
+  stateNames[indices]
+}
 
 state_vals <- data.frame(latlong2state(bs_coordinates_B))
 names(state_vals) <- c("region")
