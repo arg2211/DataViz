@@ -64,6 +64,35 @@ sp.hc <- SpatialPoints(geo.hc2)  # need to make matrix into spatialpoints (sp pa
 plot(sp.hc)  # plot spatial points that we created from long & lat
 class(sp.hc)  # check that the value is sp
 
+# for ted cruz
+geo.tc <- cbind(tc$lon, tc$lat)
+geo.tc2 <- na.omit(geo.tc)  # get rid of all NAs
+sp.tc <- SpatialPoints(geo.tc2)  # need to make matrix into spatialpoints (sp package)
+plot(sp.tc)  # plot spatial points that we created from long & lat
+class(sp.tc)  # check that the value is sp
+
+# for marco rubio
+geo.mr <- cbind(mr$lon, mr$lat)
+geo.mr2 <- na.omit(geo.mr)  # get rid of all NAs
+sp.mr <- SpatialPoints(geo.mr2)  # need to make matrix into spatialpoints (sp package)
+plot(sp.mr)  # plot spatial points that we created from long & lat
+class(sp.mr)  # check that the value is sp
+
+# for bernie sanders
+geo.bs <- cbind(bs$lon, bs$lat)
+geo.bs2 <- na.omit(geo.bs)  # get rid of all NAs
+sp.bs <- SpatialPoints(geo.bs2)  # need to make matrix into spatialpoints (sp package)
+plot(sp.bs)  # plot spatial points that we created from long & lat
+class(sp.bs)  # check that the value is sp
+
+# for donald trump
+geo.dt <- cbind(dt$lon, dt$lat)
+geo.dt2 <- na.omit(geo.dt)  # get rid of all NAs
+sp.dt <- SpatialPoints(geo.dt2)  # need to make matrix into spatialpoints (sp package)
+plot(sp.dt)  # plot spatial points that we created from long & lat
+class(sp.dt)  # check that the value is sp
+
+
 # what is this?? 
 #crs.geo <- CRS("+init=EPSG:32633")    
 #proj4string(tw_points_B) <- crs.geo
@@ -87,14 +116,32 @@ IDs <- sapply(strsplit(usa$names, ":"), function(x) x[1])
 # ^ use USA map that we made to produce a spatial polygon
 usa <- map2SpatialPolygons(usa, IDs=IDs, proj4string=CRS("+proj=longlat +datum=WGS84"))
 
-poly.counts(sp.hc, usa) # count tweets by state
+poly.counts(sp.hc, usa) # count tweets by state for hillary
+poly.counts(sp.tc, usa) # count tweets by state for ted
+poly.counts(sp.mr, usa) # count tweets by state for marco
+poly.counts(sp.bs, usa) # count tweets by state for bernie
+poly.counts(sp.dt, usa) # count tweets by state for donald
+
 
 # create a choropleth map of tweet counts by state
-usa$statecount <- poly.counts(sp.hc, usa)
+usa$statecountHC <- poly.counts(sp.hc, usa)
+usa$statecountTC <- poly.counts(sp.tc, usa)
+usa$statecountMR <- poly.counts(sp.mr, usa)
+usa$statecountBS <- poly.counts(sp.bs, usa)
+usa$statecountDT <- poly.counts(sp.dt, usa)
+
 library(tmap)
 library(RColorBrewer)
-qtm(usa, "statecount", col = brewer.pal(8, "BuGn"))
+
+qtm(usa, "statecountHC")
+qtm(usa, "statecountTC")
+qtm(usa, "statecountMR")
+qtm(usa, "statecountBS")
+qtm(usa, "statecountDT")
+
 summary(usa)
+
+
 
 # ------------------------------- # Erica's code # ------------------------------------ #
 
