@@ -25,7 +25,7 @@ primariestweets <- read.csv("./primaries-data/primariestweets.csv", header = TRU
 primariestweets$text <- sapply(primariestweets$text, function(row) iconv(row, "latin1", "ASCII", sub = ""))
 #tweet_all$text <- iconv(tweet_all$text, from = "UTF-8", to = "latin1", sub = "")
 
-# find out how many tweets have these key words
+# find out how many tweets have these key words (in " ")
 length(grep("hillaryclinton", tweet_all$text, ignore.case = TRUE))
 
 # filter tweets by candidate
@@ -56,7 +56,7 @@ library(rgeos)
 library(GISTools)
 library(maptools)
 
-# extract long & lat from data into a spatialpoint object
+# extract long & lat from data into a spatialpoint object for each candidate
 # for hillary clinton
 geo.hc <- cbind(hc$lon, hc$lat)
 geo.hc2 <- na.omit(geo.hc)  # get rid of all NAs
@@ -101,11 +101,11 @@ class(sp.dt)  # check that the value is sp
 # now we have our data points - we need the map (polygons)
 library(ggplot2) # need for map_data function
 
-# for states in usa
+# for map of states in usa
 all_states <- map_data("state")
 plot(all_states)
 
-# for countries in world
+# for map of countries in world
 worldmap <- map_data("world")
 plot(worldmap)
 
@@ -141,14 +141,14 @@ poly.counts(sp.mr, worldmap)
 poly.counts(sp.bs, worldmap)
 poly.counts(sp.dt, worldmap)
 
-# sum of all tweets for each candidate
+# sum of all tweets for each candidate in usa
 sum(poly.counts(sp.hc, usa)) # = 173
 sum(poly.counts(sp.tc, usa)) # = 119
 sum(poly.counts(sp.mr, usa)) # = 59
 sum(poly.counts(sp.bs, usa)) # = 203
 sum(poly.counts(sp.dt, usa)) # = 221
 
-# sum of all tweets for each candidate
+# sum of all tweets for each candidate in world
 sum(poly.counts(sp.hc, worldmap)) # = 190
 sum(poly.counts(sp.tc, worldmap)) # = 131
 sum(poly.counts(sp.mr, worldmap)) # = 65
@@ -182,6 +182,7 @@ library(tmap)
 library(RColorBrewer)
 
 # create choropleth maps for each candidate, mapping # of tweets in each state
+# don't need this for assignment after all...
 qtm(usa, "statecountHC")
 qtm(usa, "statecountTC")
 qtm(usa, "statecountMR")
@@ -260,12 +261,6 @@ staticmapworldDT
 
 
 # create choropleth maps for each candidate, mapping proportion (%) of total tweets in each state
-qtm(usa, "statepropHC")
-qtm(usa, "statepropTC")
-qtm(usa, "statepropMR")
-qtm(usa, "statepropBS")
-qtm(usa, "statepropDT")
-
 # hillary clinton
 usa$statepropHC
 staticmapusaHC <- qtm(usa, fill = "statepropHC", # use use that we created and fill with candidate's tweet counts by state
