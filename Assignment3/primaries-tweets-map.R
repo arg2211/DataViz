@@ -100,21 +100,32 @@ class(sp.dt)  # check that the value is sp
 
 # now we have our data points - we need the map (polygons)
 library(ggplot2) # need for map_data function
+
+# for states in usa
 all_states <- map_data("state")
 plot(all_states)
+
+# for countries in world
+worldmap <- map_data("world")
+plot(worldmap)
+
 library(rgeos)
 library(GISTools)
 
 require(maps)
 usa <- map("state", fill = TRUE)  # produces map of US by state
+worldmap <- map("world", fill = TRUE) #produces map of world
 
 require(sp)
 require(maptools)
 
-# ------ # *** what's happening here?? *** # ------ #
 # use USA map that we made to produce a spatial polygon
 IDs <- sapply(strsplit(usa$names, ":"), function(x) x[1])  
 usa <- map2SpatialPolygons(usa, IDs=IDs, proj4string=CRS("+proj=longlat +datum=WGS84"))
+
+# use world map that we made to produce a spatial polygon
+worldIDs <- sapply(strsplit(worldmap$names, ":"), function(x) x[1])
+worldmap <- map2SpatialPolygons(worldmap, IDs=worldIDs, proj4string=CRS("+proj=longlat +datum=WGS84"))
 
 # count tweets by state for each candidate
 poly.counts(sp.hc, usa)
@@ -123,19 +134,42 @@ poly.counts(sp.mr, usa)
 poly.counts(sp.bs, usa)
 poly.counts(sp.dt, usa)
 
-# sum of all tweets for each candidate
-sum(poly.counts(sp.hc, usa)) # = 169
-sum(poly.counts(sp.tc, usa)) # = 112
-sum(poly.counts(sp.mr, usa)) # = 57
-sum(poly.counts(sp.bs, usa)) # = 194
-sum(poly.counts(sp.dt, usa)) # = 224
+# count tweets by country for each candidate
+poly.counts(sp.hc, worldmap)
+poly.counts(sp.tc, worldmap)
+poly.counts(sp.mr, worldmap)
+poly.counts(sp.bs, worldmap)
+poly.counts(sp.dt, worldmap)
 
-# create a variable that includes the # of tweets in each state
+# sum of all tweets for each candidate
+sum(poly.counts(sp.hc, usa)) # = 173
+sum(poly.counts(sp.tc, usa)) # = 119
+sum(poly.counts(sp.mr, usa)) # = 59
+sum(poly.counts(sp.bs, usa)) # = 203
+sum(poly.counts(sp.dt, usa)) # = 221
+
+# sum of all tweets for each candidate
+sum(poly.counts(sp.hc, worldmap)) # = 190
+sum(poly.counts(sp.tc, worldmap)) # = 131
+sum(poly.counts(sp.mr, worldmap)) # = 65
+sum(poly.counts(sp.bs, worldmap)) # = 225
+sum(poly.counts(sp.dt, worldmap)) # = 248
+
+# create a variable that includes the # of tweets in each state/usa
 usa$statecountHC <- poly.counts(sp.hc, usa)
 usa$statecountTC <- poly.counts(sp.tc, usa)
 usa$statecountMR <- poly.counts(sp.mr, usa)
 usa$statecountBS <- poly.counts(sp.bs, usa)
 usa$statecountDT <- poly.counts(sp.dt, usa)
+
+# create a variable that includes the # of tweets in each country/world
+worldmap$countrycountHC <- poly.counts(sp.hc, worldmap)
+worldmap$countrycountTC <- poly.counts(sp.tc, worldmap)
+worldmap$countrycountMR <- poly.counts(sp.mr, worldmap)
+worldmap$countrycountBS <- poly.counts(sp.bs, worldmap)
+worldmap$countrycountDT <- poly.counts(sp.dt, worldmap)
+
+worldmap$countrycountHC # look at country counts
 
 # create a variable that includes the proportion (%) of tweets in each state compared to total # of tweets for candidate
 usa$statepropHC <- poly.counts(sp.hc, usa)/sum(poly.counts(sp.hc, usa))*100
@@ -154,6 +188,33 @@ qtm(usa, "statecountMR")
 qtm(usa, "statecountBS")
 qtm(usa, "statecountDT")
 
+library(tm)
+
+# create choropleth maps for each candidate, mapping # of tweets in each state
+qtm(worldmap, fill = "countrycountHC", fill.title = "Tweet Count", 
+    fill.style="fixed", fill.breaks=c(0,1,5,80,200))
+worldmap$countrycountHC
+
+qtm(worldmap, fill = "countrycountTC", fill.title = "Tweet Count",
+    fill.style = "fixed", fill.breaks = c(0, 1, 2, 3, 5, 100, 110))
+worldmap$countrycountTC
+
+qtm(worldmap, fill = "countrycountMR", fill.title = "Tweet Count",
+    fill.style = "fixed", fill.breaks = c(0, 1, 4, 100, 200))
+worldmap$countrycountMR
+
+qtm(worldmap, fill = "countrycountBS", fill.title = "Tweet Count",
+    fill.style = "fixed", fill.breaks = c(0, 1, 4, 100, 200))
+worldmap$countrycountBS
+
+qtm(worldmap, fill = "countrycountDT", fill.title = "Tweet Count",
+    fill.style = "fixed", fill.breaks = c(0, 1, 3, 10, 100, 205),
+    tmap.style = natural)
+worldmap$countrycountDT
+
+style_catalogue()
+
+
 summary(usa)
 
 # create choropleth maps for each candidate, mapping proportion (%) of total tweets in each state
@@ -163,11 +224,18 @@ qtm(usa, "statepropMR")
 qtm(usa, "statepropBS")
 qtm(usa, "statepropDT")
 
+
+
+
+
+
+
+-----------------------------------------------------------
 # Jenn's code for choropleth maps
 # see: http://stackoverflow.com/questions/8751497/latitude-longitude-coordinates-to-state-code-in-r for latlong2state function
 
-install.packages("choroplethr")
-install.packages("choroplethrMaps")
+#install.packages("choroplethr")
+#install.packages("choroplethrMaps")
 library(choroplethr)
 
 state_vals <- data.frame(latlong2state(bs_coordinates_B))
@@ -176,6 +244,35 @@ state_cnts <- count(state_vals, region)
 names(state_cnts) <- c("region", "value")
 
 state_choropleth(na.omit(state_cnts))
+
+# Ling's code for choropleth maps
+
+library(choroplethr)
+latlong2state <- function(pointsDF) {
+  states <- map('state', fill=TRUE, col="transparent", plot=FALSE)
+  IDs <- sapply(strsplit(states$names, ":"), function(x) x[1])
+  states_sp <- map2SpatialPolygons(states, IDs=IDs,
+                                   proj4string=CRS("+proj=longlat +datum=WGS84"))
+  pointsSP <- SpatialPoints(pointsDF, 
+                            proj4string=CRS("+proj=longlat +datum=WGS84"))
+  indices <- over(pointsSP, states_sp)
+  stateNames <- sapply(states_sp@polygons, function(x) x@ID)
+  stateNames[indices]
+}
+
+state_valsDT <- data.frame(latlong2state(sp.dt))
+names(state_valsDT) <- c("region")
+state_countsDT <- count(state_valsDT, region)
+names(state_countsDT) <- c("region", "value")
+
+Sander_usamap <- state_choropleth(na.omit(state_cnts))
+
+sp.dt.df <- data.frame(sp.dt)
+BS.usa.map <- state_choropleth(sp.dt.df)
+-----------------------------------------
+
+
+
 
 
 # ------------------------------- # Erica's code # ------------------------------------ #
@@ -311,7 +408,7 @@ require(maps)
 usa <- map("state", fill=FALSE)
 usa$names  # prints all names of states in usa map
 
-worldmap <- map("world", fill=FALSE)
+worldmap <- map("world", fill=TRUE)
 worldmap$names # prints all country names in world map
 
 require(sp)
@@ -363,3 +460,57 @@ names(state_cnts) <- c("region", "value")
 
 state_choropleth(na.omit(state_cnts))
 # -------------------------------------# end of Jenn's code # --------------------------------------#
+
+# -------------------------------# Ling's code for maps # ---------------------------#
+## world map for Sanders
+world_map <- map("world", fill=F)
+Sanders_coordinates<- cbind(Sanders$place_lon,Sanders$place_lat)
+Sanders_coordinates<- na.omit(Sanders_coordinates)
+Sanders_geo <- data.frame(Sanders_coordinates)
+
+Sanders_points <- SpatialPoints(Sanders_coordinates)
+plot(Sanders_points)
+class(Sanders_points)
+
+world <- map_data("world")
+ggplot(world) + geom_map(aes(map_id = region), map = world, fill = "grey90", color = "grey50", size = 0.25) + expand_limits(x = world$long, y = world$lat) + scale_x_continuous("Longitude") + scale_y_continuous("Latitude") + theme_minimal() + geom_point(data = Sanders_geo, aes(x = Sanders_geo$X1, y = Sanders_geo$X2), size = 1, alpha = 1/5, color = "blue")
+
+## usa map for Sanders
+require(sp)
+require(maptools)
+
+all_states <- map_data("state")
+plot(all_states)
+usa <- map("state", fill=T)
+
+IDs <- sapply(strsplit(usa$names, ":"), function(x) x[1])
+usa <- map2SpatialPolygons(usa, IDs=IDs, proj4string=CRS("+proj=longlat +datum=WGS84"))
+
+poly.counts(Sanders_points, usa)
+
+##install.packages("choroplethr")
+##install.packages("choroplethrMaps")
+library(choroplethr)
+
+latlong2state <- function(pointsDF) {
+  states <- map('state', fill=TRUE, col="transparent", plot=FALSE)
+  IDs <- sapply(strsplit(states$names, ":"), function(x) x[1])
+  states_sp <- map2SpatialPolygons(states, IDs=IDs,
+                                   proj4string=CRS("+proj=longlat +datum=WGS84"))
+  
+  pointsSP <- SpatialPoints(pointsDF, 
+                            proj4string=CRS("+proj=longlat +datum=WGS84"))
+  
+  indices <- over(pointsSP, states_sp)
+  
+  stateNames <- sapply(states_sp@polygons, function(x) x@ID)
+  stateNames[indices]
+}
+
+state_vals <- data.frame(latlong2state(Sanders_coordinates))
+names(state_vals) <- c("region")
+state_cnts <- count(state_vals, region)
+names(state_cnts) <- c("region", "value")
+
+Sander_usamap <- state_choropleth(na.omit(state_cnts))
+# ------------------------- # end of Ling's code # -----------------------------------#
