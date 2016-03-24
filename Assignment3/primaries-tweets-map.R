@@ -92,6 +92,13 @@ sp.dt <- SpatialPoints(geo.dt2)  # need to make matrix into spatialpoints (sp pa
 plot(sp.dt)  # plot spatial points that we created from long & lat
 class(sp.dt)  # check that the value is sp
 
+# for all candidates combined
+geo.all <- cbind(primariestweets$lon, primariestweets$lat)
+geo.all2 <- na.omit(geo.all)  # get rid of all NAs
+sp.all <- SpatialPoints(geo.all2)  # need to make matrix into spatialpoints (sp package)
+plot(sp.all)  # plot spatial points that we created from long & lat
+class(sp.all)  # check that the value is sp
+
 
 # what is this?? 
 #crs.geo <- CRS("+init=EPSG:32633")    
@@ -133,6 +140,7 @@ poly.counts(sp.tc, usa)
 poly.counts(sp.mr, usa)
 poly.counts(sp.bs, usa)
 poly.counts(sp.dt, usa)
+poly.counts(sp.all, usa)
 
 # count tweets by country for each candidate
 poly.counts(sp.hc, worldmap)
@@ -140,6 +148,7 @@ poly.counts(sp.tc, worldmap)
 poly.counts(sp.mr, worldmap)
 poly.counts(sp.bs, worldmap)
 poly.counts(sp.dt, worldmap)
+poly.counts(sp.all, worldmap)
 
 # sum of all tweets for each candidate in usa
 sum(poly.counts(sp.hc, usa)) # = 173
@@ -147,6 +156,7 @@ sum(poly.counts(sp.tc, usa)) # = 119
 sum(poly.counts(sp.mr, usa)) # = 59
 sum(poly.counts(sp.bs, usa)) # = 203
 sum(poly.counts(sp.dt, usa)) # = 221
+sum(poly.counts(sp.all, usa)) # = 753
 
 # sum of all tweets for each candidate in world
 sum(poly.counts(sp.hc, worldmap)) # = 190
@@ -154,6 +164,7 @@ sum(poly.counts(sp.tc, worldmap)) # = 131
 sum(poly.counts(sp.mr, worldmap)) # = 65
 sum(poly.counts(sp.bs, worldmap)) # = 225
 sum(poly.counts(sp.dt, worldmap)) # = 248
+sum(poly.counts(sp.all, worldmap)) # = 898
 
 # create a variable that includes the # of tweets in each state/usa
 usa$statecountHC <- poly.counts(sp.hc, usa)
@@ -161,6 +172,7 @@ usa$statecountTC <- poly.counts(sp.tc, usa)
 usa$statecountMR <- poly.counts(sp.mr, usa)
 usa$statecountBS <- poly.counts(sp.bs, usa)
 usa$statecountDT <- poly.counts(sp.dt, usa)
+usa$statecountALL <- poly.counts(sp.all, usa)
 
 # create a variable that includes the # of tweets in each country/world
 worldmap$countrycountHC <- poly.counts(sp.hc, worldmap)
@@ -168,6 +180,7 @@ worldmap$countrycountTC <- poly.counts(sp.tc, worldmap)
 worldmap$countrycountMR <- poly.counts(sp.mr, worldmap)
 worldmap$countrycountBS <- poly.counts(sp.bs, worldmap)
 worldmap$countrycountDT <- poly.counts(sp.dt, worldmap)
+worldmap$countrycountALL <- poly.counts(sp.all, worldmap)
 
 worldmap$countrycountHC # look at country counts
 
@@ -177,6 +190,7 @@ usa$statepropTC <- poly.counts(sp.tc, usa)/sum(poly.counts(sp.tc, usa))*100
 usa$statepropMR <- poly.counts(sp.mr, usa)/sum(poly.counts(sp.mr, usa))*100
 usa$statepropBS <- poly.counts(sp.bs, usa)/sum(poly.counts(sp.bs, usa))*100
 usa$statepropDT <- poly.counts(sp.dt, usa)/sum(poly.counts(sp.dt, usa))*100
+usa$statepropALL <- poly.counts(sp.all, usa)/sum(poly.counts(sp.all, usa))*100
 
 library(tmap)
 library(RColorBrewer)
@@ -188,6 +202,7 @@ qtm(usa, "statecountTC")
 qtm(usa, "statecountMR")
 qtm(usa, "statecountBS")
 qtm(usa, "statecountDT")
+qtm(usa, "statecountALL")
 
 library(tm)
 
