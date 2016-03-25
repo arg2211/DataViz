@@ -197,6 +197,12 @@ usa$pstatepropBS <- poly.counts(spp.bs, usa)/sum(poly.counts(spp.bs, usa))*100
 usa$pstatepropDT <- poly.counts(spp.dt, usa)/sum(poly.counts(spp.dt, usa))*100
 usa$pstatepropALL <- poly.counts(spp.all, usa)/sum(poly.counts(spp.all, usa))*100
 
+# find number of countries in world where tweets are sent from for each candidate
+library(plyr)
+nonzero <- function(x) sum(x != 0)
+worldmap.df <- data.frame(worldmap)
+numcolwise(nonzero)(worldmap.df)
+
 library(tmap)
 library(RColorBrewer)
 
