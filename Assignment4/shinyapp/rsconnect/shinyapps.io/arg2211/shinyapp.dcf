@@ -2,6 +2,8 @@ name: shinyapp
 account: arg2211
 server: shinyapps.io
 appId: 93120
-bundleId: 414235
+bundleId: 414244
 url: https://arg2211.shinyapps.io/shinyapp/
-when: 1460165199.27624
+when: 1460168880.18677
+asMultiple: FALSE
+asStatic: FALSE
