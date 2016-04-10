@@ -22,13 +22,16 @@ shinyUI(navbarPage( "Presidential Candidate Tweet Visualizations",
   # this puts each output in tabs
   navbarMenu("Compare Tweet Volume by Topic",
     tabPanel("Democrats vs. Republicans",
-             plotOutput("t_plot")
+             plotOutput("t_plot"),
+             plotOutput("t_plot2")
              ),
     tabPanel("Trump vs. Cruz",
-             plotOutput("r_plot")
+             plotOutput("r_plot"),
+             plotOutput("r_plot2")
     ),
     tabPanel("Sanders vs. Clinton",
-             plotOutput("d_plot")
+             plotOutput("d_plot"),
+             plotOutput("d_plot2")
     )
   ),
 

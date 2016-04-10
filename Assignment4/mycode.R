@@ -75,4 +75,4 @@ t$topicsum <- rowSums(t[8:17])
 t$topic[t$topicsum>1] <- "multiple"
 
 t2 <- t[!is.na(t$topic),]
-write.csv(t2, file = "t2.csv")
+write.csv(t2, file = "./shinyapp/t2.csv")

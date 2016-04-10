@@ -207,6 +207,21 @@ shinyServer(function(input, output, session) {
     
   })
   
+  output$t_plot2<- renderPlot({
+    ggplot(tweets.df, aes(topic, fill = party2)) + geom_bar(position = "fill") +
+      scale_fill_manual(values = c("red","blue"), 
+                        name = "Political Parties",
+                        labels = c("Democratic Candidates","Republican Candidates")) +
+      labs(x = "Topic", y = "Proportion of Tweets") +
+      theme_minimal() +
+      scale_x_discrete(breaks=c("china","climatechange","economy","guncontrol","healthcare",
+                                "immigration","military","multiple","race","religion","trade"),
+                       labels=c("China","Climate Change","Economy","Gun Control","Healthcare",
+                                "Immigration","Military","Multiple Topics","Race",
+                                "Religion","Trade"))
+    
+  })
+  
   output$r_plot<- renderPlot({
     ggplot(reps.df, aes(topic, fill = candidate)) + geom_bar(position = "dodge") +
       scale_fill_manual(values = c("#00C0E5","#002A33"), name = "Republican Candidates") +
@@ -219,10 +234,35 @@ shinyServer(function(input, output, session) {
                                 "Religion","Trade"))
   })
   
+  
+  output$r_plot2<- renderPlot({
+    ggplot(reps.df, aes(topic, fill = candidate)) + geom_bar(position = "fill") +
+      scale_fill_manual(values = c("#00C0E5","#002A33"), name = "Republican Candidates") +
+      labs(x = "Topic", y = "Proportion of Tweets") +
+      theme_minimal() +
+      scale_x_discrete(breaks=c("china","climatechange","economy","guncontrol","healthcare",
+                                "immigration","military","multiple","race","religion","trade"),
+                       labels=c("China","Climate Change","Economy","Gun Control","Healthcare",
+                                "Immigration","Military","Multiple Topics","Race",
+                                "Religion","Trade"))
+  })
+  
   output$d_plot<- renderPlot({
     ggplot(dems.df, aes(topic, fill = candidate)) + geom_bar(position = "dodge") +
       scale_fill_manual(values = c("#E50028","#660011"), name = "Democratic Candidates") +
       labs(x = "Topic", y = "Number of Tweets") +
+      theme_minimal() +
+      scale_x_discrete(breaks=c("china","climatechange","economy","guncontrol","healthcare",
+                                "immigration","military","multiple","race","religion","trade"),
+                       labels=c("China","Climate Change","Economy","Gun Control","Healthcare",
+                                "Immigration","Military","Multiple Topics","Race",
+                                "Religion","Trade"))
+  })
+  
+  output$d_plot2<- renderPlot({
+    ggplot(dems.df, aes(topic, fill = candidate)) + geom_bar(position = "fill") +
+      scale_fill_manual(values = c("#E50028","#660011"), name = "Democratic Candidates") +
+      labs(x = "Topic", y = "Proportion of Tweets") +
       theme_minimal() +
       scale_x_discrete(breaks=c("china","climatechange","economy","guncontrol","healthcare",
                                 "immigration","military","multiple","race","religion","trade"),
