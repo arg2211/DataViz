@@ -1,7 +1,7 @@
 
 
-setwd("~/GitHub/DataViz/Assignment4")
-tweets.df <- read.csv("./shinyapp/t2.csv", header = TRUE)
+#setwd("~/GitHub/DataViz/Assignment4/shinyapp")
+tweets.df <- read.csv("t2.csv", header = TRUE)
 
 # remove march 26th dates
 tweets.df <- tweets.df[!tweets.df$date=="2016-03-26",]
