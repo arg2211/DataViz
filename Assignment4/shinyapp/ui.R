@@ -14,9 +14,12 @@ shinyUI(navbarPage( "Presidential Candidate Tweet Visualizations",
                     
   tabPanel("About",
            textOutput("about1"),
+           textOutput("blank1"),
            textOutput("about2"),
            textOutput("about3"),
-           textOutput("about4")
+           textOutput("about4"),
+           textOutput("blank2"),
+           textOutput("about5")
            ),
                     
   # this puts each output in tabs

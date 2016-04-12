@@ -1,6 +1,9 @@
 
+# to run locally
+# setwd("~/GitHub/DataViz/Assignment4")
+# tweets.df <- read.csv("./shinyapp/t2.csv", header = TRUE)
 
-#setwd("~/GitHub/DataViz/Assignment4/shinyapp")
+# to run remotely via shinyapps.io
 tweets.df <- read.csv("t2.csv", header = TRUE)
 
 # remove march 26th dates
@@ -109,7 +112,12 @@ shinyServer(function(input, output, session) {
       )
   })
 
-    
+  output$blank1 <- renderText({
+    paste0("-")
+  })  
+  output$blank2 <- renderText({
+    paste0("-")
+  })  
   output$about1 <- renderText({
     paste0("Welcome!")
   })
@@ -123,6 +131,9 @@ shinyServer(function(input, output, session) {
   })
   output$about4 <- renderText({
     paste0("Click on the panel tabs to view different plots about the tweets.")
+  })
+  output$about5 <- renderText({
+    paste0("Created by Amanda Gates")
   })
   
   output$p_plot_stacked<- renderPlot({
