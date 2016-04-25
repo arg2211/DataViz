@@ -44,3 +44,11 @@ Uses tweets collected about presidential candidates on days of primaries through
 * Mar 15
 
 I mapped the number of tweets sent from countries around the world about each of five candidates (Hillary Clinton, Ted Cruz, Marco Rubio, Bernie Sanders, and Donald Trump).  I also mapped the proportion of total tweets sent from inside the US by state for each of the five candidates. Additionally, I created the same ten maps just mentioned but used the base location of Twitter users (```{r}"place_lon``` and ```{r}place_lat```) instead of the real-time geolocated place from where each tweet was sent (```{r}"lon``` and ```{r}lat```).  There are tens of thousands of tweets that have this data available while there are only a few hundred tweets with the real-time geolocation available. Final versions of these maps are included in .jpeg format.
+
+## *Assignment 4*
+
+coming soon!
+
+## *Final Project* ##
+
+[link to summary files](http://ec2-54-172-89-178.compute-1.amazonaws.com/summaries_csv)
