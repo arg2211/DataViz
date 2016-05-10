@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: auto;
+  position: relative;
+  width: 960px;
+}
+
+text {
+  font: 10px sans-serif;
+}
+
+form {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+</style>
+<form>
+  <label><input type="radio" name="dataset" value="apples" checked> Apples</label>
+  <label><input type="radio" name="dataset" value="oranges"> Oranges</label>
+  <label><input type="radio" name="dataset" value="pears"> Pears</label>
+</form>
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script>
+
+var width = 960,
+    height = 500,
+    radius = Math.min(width, height) / 2;
+
+var color = d3.scale.category20();
+
+var pie = d3.layout.pie()
+    .value(function(d) { return d.apples; })
+    .sort(null);
+
+var arc = d3.svg.arc()
+    .innerRadius(radius - 100)
+    .outerRadius(radius - 20);
+
+// var labelArc = d3.svg.arc()
+//     .outerRadius(radius - 40)
+//     .innerRadius(radius - 40);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+d3.csv("tweets20.csv", type, function(error, data) {
+  // var path = svg.datum(data).selectAll("path")
+  //     .data(pie)
+  //   .enter().append("path")
+  //     .attr("fill", function(d, i) { return color(i); })
+  //     .attr("d", arc);
+
+      var g = svg.selectAll(".arc")
+          .data(pie(data))
+        .enter().append("g")
+          .attr("class", "arc");
+
+      g.append("path")
+          .attr("d", arc)
+          .style("fill", function(d, i) { return color(i); });
+
+      g.append("text")
+          .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+          .attr("dy", ".35em")
+          .text(function(d) { return d.data.candidates; });
+
+
+  d3.selectAll("input")
+      .on("change", change);
+
+  var timeout = setTimeout(function() {
+    d3.select("input[value=\"oranges\"]").property("checked", true).each(change);
+  }, 2000);
+
+  function change() {
+    var value = this.value;
+    clearTimeout(timeout);
+    pie.value(function(d) { return d[value]; }); // change the value function
+    g.data(pie) // compute new angles
+        .attr("d", arc); // redraw the arcs
+  }
+});
+
+function type(d) {
+  d.apples = +d.apples;
+  d.oranges = +d.oranges;
+  d.pears = +d.pears;
+  return d;
+}
+
+</script>

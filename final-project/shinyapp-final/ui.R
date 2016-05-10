@@ -25,17 +25,27 @@ shinyUI(navbarPage( "Presidential Candidate Tweet Visualizations",
   # this puts each output in tabs
   navbarMenu("Compare Tweet Volume by Topic",
     tabPanel("Democrats vs. Republicans",
-             plotOutput("t_plot"),
-             plotOutput("t_plot2")
-             ),
-    tabPanel("Trump vs. Cruz",
-             plotOutput("r_plot"),
-             plotOutput("r_plot2")
-    ),
-    tabPanel("Sanders vs. Clinton",
-             plotOutput("d_plot"),
-             plotOutput("d_plot2")
-    )
+             sidebarLayout(
+               sidebarPanel(
+                 helpText("write here"),
+                 checkboxGroupInput("var3", label = h3("Checkbox group"), 
+                                    choices = list("democrat" = 1, "republican" = 2),
+                                    selected = 1)
+               ),
+               mainPanel(
+                 plotOutput("t_plot")
+                 #plotOutput("t_plot2")
+               )
+             )
+             )
+#     tabPanel("Trump vs. Cruz",
+#              plotOutput("r_plot"),
+#              plotOutput("r_plot2")
+#     ),
+#     tabPanel("Sanders vs. Clinton",
+#              plotOutput("d_plot"),
+#              plotOutput("d_plot2")
+#     )
   ),
 
   navbarMenu("Compare Tweet Volume by Day",  
@@ -80,8 +90,8 @@ tabPanel("Compare Parties",
                                
                                selectInput("var2", 
                                            label = "Select a Political Party:",
-                                           choices = c("Democrats","Republicans"),
-                                           selected = "Democrats"),
+                                           choices = c("democrat","republican"),
+                                           selected = "democrat"),
                                radioButtons("graphtype2","Select a Plot Style:",
                                             choices = c("Stacked Bars", "Side-by-Side Bars","Separate Plots by Topic"),
                                             selected = "Stacked Bars")
